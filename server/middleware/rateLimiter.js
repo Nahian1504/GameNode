@@ -23,16 +23,5 @@ const authLimiter = rateLimit({
   skipSuccessfulRequests: true,
 });
  
-
-const steamLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  limit: parseInt(process.env.STEAM_RATE_LIMIT_MAX) || 30, 
-  standardHeaders: "draft-7",
-  legacyHeaders: false,
-  message: {
-    success: false,
-    message: "Too many Steam API requests. Please wait before trying again.",
-  },
-});
  
-module.exports = { globalLimiter, authLimiter, steamLimiter };
+module.exports = { globalLimiter, authLimiter };
