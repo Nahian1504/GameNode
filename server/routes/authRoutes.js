@@ -4,7 +4,6 @@ const { body, validationResult } = require("express-validator");
 
 const User = require("../models/User");
 const { hashPassword, comparePassword } = require("../utils/passwordUtils");
-const { generateToken } = require("../utils/tokenUtils");
 const { authLimiter } = require("../middleware/rateLimiter");
 
 // Input Validation Rules 

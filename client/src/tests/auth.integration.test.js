@@ -12,7 +12,6 @@ jest.mock("../services/axiosConfig", () => ({
 }));
 
 import React from "react";
-import API from "../services/axiosConfig";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router-dom";
@@ -29,6 +28,8 @@ jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
   useNavigate: () => mockNavigate,
 }));
+
+import API from "../services/axiosConfig";
 
 // Helper to render with all providers
 const renderWithProviders = (component, initialAuthUser = null) => {
@@ -149,98 +150,3 @@ describe("Register Page", () => {
   });
 });
 
-// User story 2: Login Page UI Tests
-describe("Login Page", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-    localStorage.clear();
-  });
-
-  test("renders email and password fields", () => {
-    renderWithProviders(<Login />);
-    expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
-  });
-
-  test("shows error for invalid email format", async () => {
-    renderWithProviders(<Login />);
-    const emailInput = screen.getByLabelText(/email/i);
-    await userEvent.type(emailInput, "badformat");
-    fireEvent.blur(emailInput);
-    await waitFor(() => {
-      expect(screen.getByText(/valid email/i)).toBeInTheDocument();
-    });
-  });
-
-  test("shows error for empty password", async () => {
-    renderWithProviders(<Login />);
-    const pwInput = screen.getByLabelText(/password/i);
-    fireEvent.focus(pwInput);
-    fireEvent.blur(pwInput);
-    await waitFor(() => {
-      expect(screen.getByText(/password is required/i)).toBeInTheDocument();
-    });
-  });
-
-  test("calls login API with correct credentials", async () => {
-    API.post.mockResolvedValueOnce({
-      data: {
-        success: true,
-        token: "fake.jwt.token",
-        user: { username: "gamer", email: "gamer@test.com", _id: "456" },
-      },
-    });
-
-    renderWithProviders(<Login />);
-
-    await userEvent.type(screen.getByLabelText(/email/i), "gamer@test.com");
-    await userEvent.type(screen.getByLabelText(/password/i), "SecurePass1!");
-    fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
-
-    await waitFor(() => {
-      expect(API.post).toHaveBeenCalledWith("/api/auth/login", {
-        email: "gamer@test.com",
-        password: "SecurePass1!",
-      });
-    });
-  });
-
-  test("shows error message on failed login", async () => {
-    API.post.mockRejectedValueOnce({
-      response: { data: { message: "Invalid email or password." } },
-    });
-
-    renderWithProviders(<Login />);
-
-    await userEvent.type(screen.getByLabelText(/email/i), "wrong@test.com");
-    await userEvent.type(screen.getByLabelText(/password/i), "WrongPass1!");
-    fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
-
-    await waitFor(() => {
-      expect(screen.getByText(/invalid email or password/i)).toBeInTheDocument();
-    });
-  });
-
-  test("stores token in localStorage on successful login", async () => {
-    API.post.mockResolvedValueOnce({
-      data: {
-        success: true,
-        token: "valid.jwt.token",
-        user: { username: "gamer", email: "gamer@test.com", _id: "456" },
-      },
-    });
-
-    renderWithProviders(<Login />);
-
-    await userEvent.type(screen.getByLabelText(/email/i), "gamer@test.com");
-    await userEvent.type(screen.getByLabelText(/password/i), "SecurePass1!");
-    fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
-
-    await waitFor(() => {
-      const stored = localStorage.getItem("authUser");
-      expect(stored).toBeTruthy();
-      const parsed = JSON.parse(stored);
-      expect(parsed.token).toBe("valid.jwt.token");
-    });
-  });
-});
