@@ -5,6 +5,7 @@ const morgan = require("morgan");
 
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
+const steamRoutes = require("./routes/steamRoutes");
 const { globalLimiter } = require("./middleware/rateLimiter");
 const { errorHandler, notFound } = require("./middleware/errorHandler");
 
@@ -46,6 +47,9 @@ app.get("/api/health", (req, res) => {
 
 // Auth routes
 app.use("/api/auth", authRoutes);
+
+// Steam routes
+app.use("/api/steam", steamRoutes);
 
 // Error Handling 
 app.use(notFound);

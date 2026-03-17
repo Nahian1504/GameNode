@@ -23,6 +23,57 @@ const {
   clearUserCache,
 } = require("../utils/steamService");
 
+// Sample mock data — mimics real Steam API responses
+const MOCK_STEAM_ID = "76561198000000001";
+
+const MOCK_PLAYER_SUMMARY = {
+  steamid: MOCK_STEAM_ID,
+  personaname: "TestGamer",
+  avatarfull: "https://steamcdn.com/avatar.jpg",
+  profileurl: "https://steamcommunity.com/id/testgamer",
+  communityvisibilitystate: 3, 
+};
+
+const MOCK_GAMES = [
+  {
+    appid: 570,
+    name: "Dota 2",
+    playtime_forever: 1200,
+    img_icon_url: "abc123",
+  },
+  {
+    appid: 730,
+    name: "Counter-Strike 2",
+    playtime_forever: 600,
+    img_icon_url: "def456",
+  },
+  {
+    appid: 440,
+    name: "Team Fortress 2",
+    playtime_forever: 0,
+    img_icon_url: "ghi789",
+  },
+];
+
+const MOCK_NEWS = [
+  {
+    gid: "1001",
+    title: "Dota 2 Major Update Patch Notes",
+    url: "https://store.steampowered.com/news/app/570",
+    author: "Valve",
+    feedname: "steam_community_announcements",
+    date: 1700000000,
+  },
+  {
+    gid: "1002",
+    title: "New Hero Arrives in Dota 2",
+    url: "https://store.steampowered.com/news/app/570/2",
+    author: "Valve",
+    feedname: "steam_community_announcements",
+    date: 1699000000,
+  },
+];
+
 // Use a separate test database
 beforeAll(async () => {
   if (mongoose.connection.readyState !== 0) {
