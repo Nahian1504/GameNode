@@ -4,8 +4,6 @@ const { body, validationResult } = require("express-validator");
 
 const User = require("../models/User");
 const { hashPassword, comparePassword } = require("../utils/passwordUtils");
-const { generateToken } = require("../utils/tokenUtils");
-const { protect } = require("../middleware/authMiddleware");
 const { authLimiter } = require("../middleware/rateLimiter");
 
 // Input Validation Rules 
@@ -152,18 +150,6 @@ router.post("/login", authLimiter, loginValidation, async (req, res, next) => {
       message: "Login successful. Welcome back!",
       token,
       user: user.toSafeObject(),
-    });
-  } catch (error) {
-    next(error);
-  }
-});
-
-// Returns current authenticated user 
-router.get("/me", protect, async (req, res, next) => {
-  try {
-    res.status(200).json({
-      success: true,
-      user: req.user.toSafeObject(),
     });
   } catch (error) {
     next(error);
