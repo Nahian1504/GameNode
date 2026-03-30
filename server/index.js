@@ -7,6 +7,7 @@ const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const steamRoutes = require("./routes/steamRoutes");
 const achievementRoutes = require("./routes/achievementRoutes");
+const favoritesRoutes = require("./routes/favoritesRoutes");
 const { globalLimiter } = require("./middleware/rateLimiter");
 const { errorHandler, notFound } = require("./middleware/errorHandler");
 
@@ -54,6 +55,9 @@ app.use("/api/steam", steamRoutes);
 
 // Achievements
 app.use("/api/achievements", achievementRoutes);
+
+// Favorites
+app.use("/api/favorites", favoritesRoutes);
 
 // Error Handling 
 app.use(notFound);
