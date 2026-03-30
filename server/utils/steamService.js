@@ -128,7 +128,7 @@ const getGameDetail = async (appId) => {
   steamCache.set(cacheKey, detail, 3600);
   return detail;
 };
- 
+
 
 const getPlayerAchievements = async (steamId, appId) => {
   const cacheKey = `achievements_${steamId}_${appId}`;

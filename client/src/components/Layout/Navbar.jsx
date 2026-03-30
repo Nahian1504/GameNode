@@ -6,6 +6,7 @@ const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = () => {
@@ -14,9 +15,13 @@ const Navbar = () => {
   };
 
   const navLinks = [
-    { to: "/dashboard", label: "Dashboard", icon: "⊞" },
+    { to: "/dashboard", label: "Library", icon: "⊞" },
     { to: "/steam/connect", label: "Steam", icon: "🎮" },
   ];
+
+  const isActive = (path) =>
+    location.pathname === path ||
+    (path !== "/dashboard" && location.pathname.startsWith(path));
 
   return (
     <nav style={{
@@ -36,6 +41,7 @@ const Navbar = () => {
         alignItems: "center",
         justifyContent: "space-between",
       }}>
+
         {/* Logo */}
         <Link to="/dashboard" style={{
           display: "flex", alignItems: "center", gap: "10px", textDecoration: "none",

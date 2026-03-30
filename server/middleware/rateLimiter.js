@@ -22,6 +22,10 @@ const authLimiter = rateLimit({
   },
   skipSuccessfulRequests: true,
 });
+<<<<<<< HEAD
+=======
+ 
+>>>>>>> 12f9879e32170c9ae83809ec489d583cf9670908
 
 const steamLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -34,6 +38,10 @@ const steamLimiter = rateLimit({
   },
 });
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 12f9879e32170c9ae83809ec489d583cf9670908
 const dashboardLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: parseInt(process.env.DASHBOARD_RATE_LIMIT_MAX) || 20,
@@ -42,6 +50,7 @@ const dashboardLimiter = rateLimit({
   message: { success: false, message: "Too many dashboard requests. Please wait before refreshing." },
 });
  
+<<<<<<< HEAD
 
 const leaderboardLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -52,3 +61,7 @@ const leaderboardLimiter = rateLimit({
 });
  
 module.exports = { globalLimiter, authLimiter, steamLimiter, dashboardLimiter, leaderboardLimiter };
+=======
+ 
+module.exports = { globalLimiter, authLimiter, steamLimiter, dashboardLimiter };
+>>>>>>> 12f9879e32170c9ae83809ec489d583cf9670908

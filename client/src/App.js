@@ -14,11 +14,14 @@ import Register from "./pages/Auth/Register";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import SteamConnect from "./pages/Steam/SteamConnect";
 import { NotFound, ServerError } from "./pages/ErrorPages";
+HEAD
+
 import GameDetail from "./pages/Dashboard/GameDetail";       
 import AchievementsPage from "./pages/Achievements/AchievementsPage"; 
 import FavoritesPage from "./pages/Favorites/FavoritesPage";    
 import LeaderboardPage from "./pages/Leaderboard/LeaderboardPage";
 
+ 
 // Global styles
 import "./styles/global.css";
 
@@ -58,6 +61,8 @@ const App = () => {
                 </ProtectedRoute>
               } 
             />
+HEAD
+
             <Route 
               path="/achievements/:appId" 
               element={
