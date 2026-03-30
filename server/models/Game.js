@@ -82,7 +82,13 @@ const userGameSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+
+    lastPlayedAt: { 
+      type: Date, 
+      default: null, 
+    },
   },
+
   {
     timestamps: true,
   }
@@ -90,6 +96,14 @@ const userGameSchema = new mongoose.Schema(
 
 userGameSchema.index({ userId: 1, appId: 1 }, { unique: true });
 userGameSchema.index({ userId: 1 });
+
+userGameSchema.statics.getTotalPlaytimeForUser = async function (userId) {
+  const result = await this.aggregate([
+    { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+    { $group: { _id: null, total: { $sum: "$playtimeForever" } } },
+  ]);
+  return result.length > 0 ? Math.round(result[0].total / 60) : 0;
+};
 
 const Game = mongoose.model("Game", gameSchema);
 const UserGame = mongoose.model("UserGame", userGameSchema);
