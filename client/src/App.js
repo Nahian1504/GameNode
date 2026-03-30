@@ -14,6 +14,8 @@ import Register from "./pages/Auth/Register";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import SteamConnect from "./pages/Steam/SteamConnect";
 import { NotFound, ServerError } from "./pages/ErrorPages";
+import GameDetail from "./pages/Dashboard/GameDetail";       
+import AchievementsPage from "./pages/Achievements/AchievementsPage"; 
 
 // Global styles
 import "./styles/global.css";
@@ -45,6 +47,36 @@ const App = () => {
                   <SteamConnect />
                 </ProtectedRoute>
               }
+            />
+            <Route 
+              path="/game/:appId" 
+              element={
+                <ProtectedRoute>
+                  <GameDetail />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/achievements/:appId" 
+              element={
+              <ProtectedRoute>
+                <AchievementsPage />
+              </ProtectedRoute>
+              } 
+            />
+            
+            {/* Redirects */}
+            <Route 
+              path="/" 
+              element={
+              <Navigate to="/dashboard" replace />
+              } 
+            />
+            <Route 
+              path="*" 
+              element={
+              <NotFound />
+              } 
             />
 
             {/* Redirects */}

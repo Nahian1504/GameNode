@@ -6,6 +6,7 @@ const morgan = require("morgan");
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const steamRoutes = require("./routes/steamRoutes");
+const achievementRoutes = require("./routes/achievementRoutes");
 const { globalLimiter } = require("./middleware/rateLimiter");
 const { errorHandler, notFound } = require("./middleware/errorHandler");
 
@@ -50,6 +51,9 @@ app.use("/api/auth", authRoutes);
 
 // Steam routes
 app.use("/api/steam", steamRoutes);
+
+// Achievements
+app.use("/api/achievements", achievementRoutes);
 
 // Error Handling 
 app.use(notFound);
