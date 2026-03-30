@@ -22,6 +22,7 @@ const authLimiter = rateLimit({
   },
   skipSuccessfulRequests: true,
 });
+ 
 
 const steamLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -34,6 +35,7 @@ const steamLimiter = rateLimit({
   },
 });
 
+
 const dashboardLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: parseInt(process.env.DASHBOARD_RATE_LIMIT_MAX) || 20,
@@ -41,6 +43,7 @@ const dashboardLimiter = rateLimit({
   legacyHeaders: false,
   message: { success: false, message: "Too many dashboard requests. Please wait before refreshing." },
 });
+ 
 
 const leaderboardLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -49,6 +52,7 @@ const leaderboardLimiter = rateLimit({
   legacyHeaders: false,
   message: { success: false, message: "Too many leaderboard requests. Please wait." },
 });
+ 
 
 const newsLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -57,6 +61,7 @@ const newsLimiter = rateLimit({
   legacyHeaders: false,
   message: { success: false, message: "Too many news requests. Please wait before trying again." },
 });
+ 
 
 const playerCountLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
