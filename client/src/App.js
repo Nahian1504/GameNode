@@ -78,6 +78,10 @@ const App = () => {
               <NotFound />
               } 
             />
+
+            {/* Redirects */}
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>
       </DashboardProvider>
