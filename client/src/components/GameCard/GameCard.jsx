@@ -76,6 +76,9 @@ const GameCard = ({ game, onClick, isFavorite = false, onToggleFavorite }) => {
           overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
         }} title={name}>{name}</h3>
 
+ HEAD
+
+        {/* Playtime */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <span style={{
             fontSize: "0.78rem",

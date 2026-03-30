@@ -128,7 +128,42 @@ const getGameDetail = async (appId) => {
   steamCache.set(cacheKey, detail, 3600);
   return detail;
 };
+
+
+const getPlayerAchievements = async (steamId, appId) => {
+  const cacheKey = `achievements_${steamId}_${appId}`;
+  const cached   = steamCache.get(cacheKey);
+  if (cached) return cached;
+
+  const url  = `${STEAM_API_BASE}/ISteamUserStats/GetPlayerAchievements/v1/?key=${STEAM_API_KEY}&steamid=${steamId}&appid=${appId}&l=en`;
+  const data = await steamRequest(url);
+
+  if (!data?.playerstats?.success) {
+    throw new Error("Achievements not available for this game.");
+  }
+
+  const achievements = data.playerstats.achievements || [];
+  steamCache.set(cacheKey, achievements, 600);
+  return achievements;
+};
  
+
+const getGlobalAchievementPercentages = async (appId) => {
+  const cacheKey = `global_achievements_${appId}`;
+  const cached   = steamCache.get(cacheKey);
+  if (cached) return cached;
+
+  const url  = `${STEAM_API_BASE}/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v2/?gameid=${appId}&key=${STEAM_API_KEY}`;
+  const data = await steamRequest(url);
+  const pcts = data?.achievementpercentages?.achievements || [];
+
+  const map = {};
+  pcts.forEach((a) => { map[a.name] = Math.round(a.percent * 10) / 10; });
+
+  steamCache.set(cacheKey, map, 3600);
+  return map;
+};
+
 module.exports = {
   getOwnedGames,
   getCurrentPlayerCount,
@@ -136,4 +171,6 @@ module.exports = {
   getGameNews,
   clearUserCache,
   getGameDetail,
+  getPlayerAchievements,
+  getGlobalAchievementPercentages,
 };

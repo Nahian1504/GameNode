@@ -7,6 +7,8 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const handleLogout = () => {
     logout();
     navigate("/login");
@@ -39,6 +41,8 @@ const Navbar = () => {
         alignItems: "center",
         justifyContent: "space-between",
       }}>
+
+        {/* Logo */}
         <Link to="/dashboard" style={{
           display: "flex", alignItems: "center", gap: "10px", textDecoration: "none",
         }}>
