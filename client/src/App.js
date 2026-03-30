@@ -16,7 +16,8 @@ import SteamConnect from "./pages/Steam/SteamConnect";
 import { NotFound, ServerError } from "./pages/ErrorPages";
 import GameDetail from "./pages/Dashboard/GameDetail";       
 import AchievementsPage from "./pages/Achievements/AchievementsPage"; 
-import FavoritesPage from "./pages/Favorites/FavoritesPage"; 
+import FavoritesPage from "./pages/Favorites/FavoritesPage";    
+import LeaderboardPage from "./pages/Leaderboard/LeaderboardPage";
 
 // Global styles
 import "./styles/global.css";
@@ -73,7 +74,16 @@ const App = () => {
               </ProtectedRoute>
               } 
             />
-            
+            <Route 
+              path="/leaderboard"         
+              element={
+              <ProtectedRoute>
+                <LeaderboardPage />
+              </ProtectedRoute>
+              } 
+            />
+
+
             {/* Redirects */}
             <Route 
               path="/" 
@@ -87,7 +97,6 @@ const App = () => {
               <NotFound />
               } 
             />
-
           </Routes>
         </Router>
       </DashboardProvider>
