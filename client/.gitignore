@@ -6,3 +6,4 @@ build/
 .env.production.local
 *.log
 coverage/
+.env
