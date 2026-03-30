@@ -7,6 +7,7 @@ const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const steamRoutes = require("./routes/steamRoutes");
 const achievementRoutes = require("./routes/achievementRoutes");
+const newsRoutes = require("./routes/newsRoutes");
 const favoritesRoutes = require("./routes/favoritesRoutes");
 const leaderboardRoutes = require("./routes/leaderboardRoutes");
 const { globalLimiter } = require("./middleware/rateLimiter");
