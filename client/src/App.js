@@ -71,24 +71,6 @@ HEAD
               </ProtectedRoute>
               } 
             />
-            <Route 
-              path="/favorites"           
-              element={
-              <ProtectedRoute>
-                <FavoritesPage />
-              </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/leaderboard"         
-              element={
-              <ProtectedRoute>
-                <LeaderboardPage />
-              </ProtectedRoute>
-              } 
-            />
-
-
             {/* Redirects */}
             <Route 
               path="/" 
