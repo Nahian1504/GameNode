@@ -4,6 +4,7 @@ const { body, param, validationResult } = require("express-validator");
 
 const User = require("../models/User");
 const { UserGame } = require("../models/Game");
+const Achievement  = require("../models/Achievement");
 const { protect } = require("../middleware/authMiddleware");
 const { steamLimiter } = require("../middleware/rateLimiter");
 const { validateDashboardQuery } = require("../middleware/dashboardValidation");
