@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../store/auth/authContext";
+import ComplaintModal from "../../pages/Complaint/ComplaintModal";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [complaintOpen, setComplaintOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -16,6 +16,10 @@ const Navbar = () => {
 
   const navLinks = [
     { to: "/dashboard", label: "Library", icon: "⊞" },
+    { to: "/achievements", label: "Achievements", icon: "🏆" },
+    { to: "/favorites", label: "Favorites", icon: "★"  },
+    { to: "/leaderboard", label: "Leaderboard", icon: "🏅" },
+    { to: "/complaints",   label: "My Complaints",  icon: "📋" },
     { to: "/steam/connect", label: "Steam", icon: "🎮" },
   ];
 
@@ -24,6 +28,7 @@ const Navbar = () => {
     (path !== "/dashboard" && location.pathname.startsWith(path));
 
   return (
+    <>
     <nav style={{
       background: "var(--color-bg-card)",
       borderBottom: "1px solid var(--color-border)",
@@ -41,8 +46,6 @@ const Navbar = () => {
         alignItems: "center",
         justifyContent: "space-between",
       }}>
-
-        {/* Logo */}
         <Link to="/dashboard" style={{
           display: "flex", alignItems: "center", gap: "10px", textDecoration: "none",
         }}>
@@ -70,10 +73,10 @@ const Navbar = () => {
                 borderRadius: "var(--radius-sm)",
                 fontSize: "0.875rem",
                 fontWeight: 500,
-                color: location.pathname === link.to
+                color: isActive(link.to)
                   ? "var(--color-accent-primary)"
                   : "var(--color-text-secondary)",
-                background: location.pathname === link.to
+                background: isActive(link.to)
                   ? "rgba(108, 99, 255, 0.1)"
                   : "transparent",
                 textDecoration: "none",
@@ -87,6 +90,17 @@ const Navbar = () => {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          {user && (
+            <button
+              onClick={() => setComplaintOpen(true)}
+              className="btn btn-ghost btn-sm"
+              title="Report an issue"
+              style={{ fontSize: "0.8rem" }}
+            >
+              🆘 Help
+            </button>
+          )}
+          
           {user && (
             <div style={{
               display: "flex", alignItems: "center", gap: "8px",
@@ -120,6 +134,12 @@ const Navbar = () => {
         </div>
       </div>
     </nav>
+
+    <ComplaintModal
+      isOpen={complaintOpen}
+      onClose={() => setComplaintOpen(false)}
+    />
+    </>
   );
 };
 
