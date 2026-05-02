@@ -79,5 +79,14 @@ const recommendationLimiter = rateLimit({
   legacyHeaders: false,
   message: { success: false, message: "You have reached the recommendation limit. Please wait an hour before generating new recommendations.", statusCode: 429 },
 });
+
+
+const assistantLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  limit: parseInt(process.env.ASSISTANT_RATE_LIMIT_MAX) || 20,
+  standardHeaders: "draft-7",
+  legacyHeaders: false,
+  message: { success: false, message: "You have reached the assistant message limit for this hour. Please try again later.", statusCode: 429 },
+});
  
-module.exports = { globalLimiter, authLimiter, steamLimiter, dashboardLimiter, leaderboardLimiter, newsLimiter, playerCountLimiter, recommendationLimiter };
+module.exports = { globalLimiter, authLimiter, steamLimiter, dashboardLimiter, leaderboardLimiter, newsLimiter, playerCountLimiter, recommendationLimiter, assistantLimiter };
