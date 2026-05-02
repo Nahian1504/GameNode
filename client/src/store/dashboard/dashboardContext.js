@@ -11,15 +11,18 @@ export const DashboardProvider = ({ children }) => {
   const [totalPlaytimeHours, setTotalPlaytimeHours] = useState(0);
   const [favorites, setFavorites] = useState([]);
   const [favoritesLoading, setFavoritesLoading] = useState(false);
-
-
+  const [currentPage, setCurrentPage] = useState(1);          
+  const [currentSort, setCurrentSort] = useState("playtime");
+  
   // Fetch dashboard games 
   const fetchGames = useCallback(async (page = 1, sort = "playtime") => {
     setLoading(true);
     setError(null);
+    setCurrentPage(page); 
+    setCurrentSort(sort);
     try {
       const response = await API.get(
-        `/api/steam/dashboard?page=${page}&limit=12&sort=${sort}`
+        `/api/steam/dashboard?page=${page}&limit=15&sort=${sort}`
       );
       const { games: gameList, total, totalPages, totalPlaytimeHours: tph } = response.data;
       setGames(gameList);
@@ -71,13 +74,21 @@ export const DashboardProvider = ({ children }) => {
       console.error("Toggle favorite failed:", err);
     }
   }, [favorites]);
+
+  const clearDashboard = useCallback(() => {
+    setGames([]);
+    setTotalPlaytimeHours(0);
+    setFavorites([]);
+    setPagination({ page: 1, totalPages: 1, total: 0 });
+    setCurrentPage(1);          
+    setCurrentSort("playtime");
+    setError(null);
+  }, []);
  
   return (
     <DashboardContext.Provider value={{
-      games, loading, error, pagination,
-      totalPlaytimeHours,
-      fetchGames, refreshGames, clearError,
-      favorites, favoritesLoading, fetchFavorites, toggleFavorite,
+      games, loading, error, pagination, totalPlaytimeHours, fetchGames, refreshGames, clearError, favorites,
+      favoritesLoading, fetchFavorites, toggleFavorite, clearDashboard, currentPage, currentSort,
     }}>
       {children}
     </DashboardContext.Provider>
