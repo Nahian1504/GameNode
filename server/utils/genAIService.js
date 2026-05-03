@@ -59,6 +59,10 @@ const generateComplaintResolution = async (category, description) => {
 };
 
 
+feature/complaint
+module.exports = {
+  generateComplaintResolution,
+
 const generateRecommendations = async (userBehavior) => {
   const {
     topGames,
@@ -141,4 +145,5 @@ module.exports = {
   generateComplaintResolution,
   generateRecommendations,
   generateAssistantResponse,
+main
 };
