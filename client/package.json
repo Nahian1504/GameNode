@@ -16,9 +16,19 @@
     "yup": "^1.3.2"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "set PORT=3000 && react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --watchAll=false",
+    "test:achievements": "react-scripts test AchievementsFrontend --watchAll=false",
+    "test:dashboard": "react-scripts test DashboardFrontend --watchAll=false",
+    "test:favorites": "react-scripts test FavoritesFrontend --watchAll=false",
+    "test:leaderboard": "react-scripts test LeaderboardFrontend --watchAll=false",
+    "test:complaint": "react-scripts test ComplaintFrontend --watchAll=false",
+    "test:recommendations": "react-scripts test RecommendationsFrontend --watchAll=false",
+    "test:assistant": "react-scripts test AIAssistantFrontend --watchAll=false",
+    "test:news": "react-scripts test NewsPlayerCountFrontend --watchAll=false",
+    "test:error": "react-scripts test ErrorMessageFrontend --watchAll=false",
+    "test:auth": "react-scripts test auth.integration --watchAll=false",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

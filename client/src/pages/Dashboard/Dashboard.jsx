@@ -5,6 +5,7 @@ import { useDashboard } from "../../store/dashboard/dashboardContext";
 import Navbar from "../../components/Layout/Navbar";
 import GameCard, { GameCardSkeleton } from "../../components/GameCard/GameCard";
 import RecommendationsSection from "../Recommendations/RecommendationsSection"; 
+import AssistantChat from "../../components/AI/AssistantChat"; 
 
 const SORT_OPTIONS = [
   { value: "playtime", label: "Most Played" },
@@ -25,6 +26,7 @@ const Dashboard = () => {
   const { currentPage, currentSort } = useDashboard(); 
   const [sortBy, setSortBy] = useState(currentSort); 
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [assistantOpen,  setAssistantOpen]  = useState(false);
 
   useEffect(() => {
     if (user?.steamId) {
@@ -95,6 +97,13 @@ const Dashboard = () => {
             </div>
 
             <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+              <button
+                onClick={() => setAssistantOpen(true)}
+                className="btn btn-secondary btn-sm"
+                style={{ fontSize: "0.82rem" }}
+              >
+                🤖 Ask AI
+              </button>
             
               {user?.steamId && (
                 <button
