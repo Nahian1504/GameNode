@@ -1,12 +1,22 @@
 {
   "name": "gamenode-server",
-  "version": "1.0.0",
-  "description": "GameNode backend API server",
+  "version": "3.0.0",
+  "description": "GameNode backend",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "jest --testEnvironment=node --forceExit --detectOpenHandles"
+    "test": "jest --testEnvironment=node --forceExit --detectOpenHandles",
+    "test:achievements": "jest --testEnvironment=node --forceExit tests/achievements",
+    "test:dashboard": "jest --testEnvironment=node --forceExit tests/dashboard",
+    "test:favorites": "jest --testEnvironment=node --forceExit tests/favorites",
+    "test:leaderboard": "jest --testEnvironment=node --forceExit tests/leaderboard",
+    "test:complaint": "jest --testEnvironment=node --forceExit tests/complaint",
+    "test:recommendations": "jest --testEnvironment=node --forceExit tests/recommendations",
+    "test:assistant": "jest --testEnvironment=node --forceExit tests/aiAssistant",
+    "test:news": "jest --testEnvironment=node --forceExit tests/news-PlayerCount",
+    "test:error": "jest --testEnvironment=node --forceExit tests/errorMessage",
+    "test:auth": "jest --testEnvironment=node --forceExit auth.test"
   },
   "dependencies": {
     "axios": "^1.6.0",
@@ -25,5 +35,20 @@
     "jest": "^29.7.0",
     "nodemon": "^3.0.2",
     "supertest": "^6.3.3"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/tests/auth.test.js",
+      "**/tests/achievements/**/*.test.js",
+      "**/tests/dashboard/**/*.test.js",
+      "**/tests/favorites/**/*.test.js",
+      "**/tests/leaderboard/**/*.test.js",
+      "**/tests/complaint/**/*.test.js",
+      "**/tests/recommendations/**/*.test.js",
+      "**/tests/aiAssistant/**/*.test.js",
+      "**/tests/news-PlayerCount/**/*.test.js",
+      "**/tests/errorMessage/**/*.test.js"
+    ]
   }
 }
