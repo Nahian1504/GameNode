@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import { useAuth } from "../../store/auth/authContext";
 import API from "../../services/axiosConfig";
 import Navbar from "../../components/Layout/Navbar";
+import { useDashboard } from "../../store/dashboard/dashboardContext";
 
 const steamSchema = Yup.object({
   steamId: Yup.string()
@@ -14,11 +15,48 @@ const steamSchema = Yup.object({
 
 const SteamConnect = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const [serverError, setServerError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [disconnecting, setDisconnecting] = useState(false);
+  const { clearDashboard } = useDashboard();
 
-  // Already connected
+  const handleDisconnect = async () => {
+    if (!window.confirm("Are you sure you want to disconnect your Steam account?")) return;
+    setDisconnecting(true);
+    setServerError(null);
+    try {
+      await API.delete("/api/steam/disconnect");
+      clearDashboard(); 
+      await refreshUser();
+    } catch (err) {
+      setServerError(err.response?.data?.message || "Failed to disconnect Steam account.");
+    } finally {
+      setDisconnecting(false);
+    }
+  };
+
+  const formik = useFormik({
+    initialValues: { steamId: "" },
+    validationSchema: steamSchema,
+    onSubmit: async (values, { setSubmitting }) => {
+      setServerError(null);
+      setSuccess(null);
+      try {
+        const response = await API.post("/api/steam/connect", { steamId: values.steamId });
+        setSuccess(response.data);
+
+        await refreshUser();
+
+        setTimeout(() => navigate("/dashboard"), 2500);
+      } catch (err) {
+        setServerError(err.response?.data?.message || "Failed to connect Steam account.");
+      } finally {
+        setSubmitting(false);
+      }
+    },
+  });
+
   if (user?.steamId) {
     return (
       <div className="page-container">
@@ -36,6 +74,11 @@ const SteamConnect = () => {
                 borderRadius: "4px", color: "var(--color-accent-secondary)"
               }}>{user.steamId}</code>
             </p>
+            {serverError && (
+              <div className="alert alert-error" style={{ marginTop: "16px", textAlign: "left" }}>
+                <span>⚠</span> {serverError}
+              </div>
+            )}
             <button
               onClick={() => navigate("/dashboard")}
               className="btn btn-primary"
@@ -43,29 +86,19 @@ const SteamConnect = () => {
             >
               Go to Dashboard
             </button>
+            <button
+              onClick={handleDisconnect}
+              disabled={disconnecting}
+              className="btn btn-ghost btn-sm"
+              style={{ marginTop: "12px", display: "block", width: "100%", color: "#ef4444", borderColor: "#ef4444" }}
+            >
+              {disconnecting ? "Disconnecting..." : "Disconnect Steam Account"}
+            </button>
           </div>
         </div>
       </div>
     );
   }
-
-  const formik = useFormik({
-    initialValues: { steamId: "" },
-    validationSchema: steamSchema,
-    onSubmit: async (values, { setSubmitting }) => {
-      setServerError(null);
-      setSuccess(null);
-      try {
-        const response = await API.post("/api/steam/connect", { steamId: values.steamId });
-        setSuccess(response.data);
-        setTimeout(() => navigate("/dashboard"), 2500);
-      } catch (err) {
-        setServerError(err.response?.data?.message || "Failed to connect Steam account.");
-      } finally {
-        setSubmitting(false);
-      }
-    },
-  });
 
   return (
     <div className="page-container">
@@ -85,7 +118,6 @@ const SteamConnect = () => {
             </p>
           </div>
 
-          {/* Success */}
           {success && (
             <div className="alert alert-success" style={{ marginBottom: "24px" }}>
               <span>✓</span>
@@ -98,7 +130,6 @@ const SteamConnect = () => {
             </div>
           )}
 
-          {/* Error */}
           {serverError && (
             <div className="alert alert-error" style={{ marginBottom: "24px" }}>
               <span>⚠</span> {serverError}
@@ -172,7 +203,7 @@ const SteamConnect = () => {
               </li>
             </ol>
             <div className="alert alert-info" style={{ marginTop: "16px", marginBottom: 0 }}>
-              <span>ℹ</span> Your Steam profile must be set to <strong>Public</strong> for GameNode to access your library.
+              <span>ℹ</span> Your Steam profile must be set to Public for GameNode to access your library.
             </div>
           </div>
         </div>
