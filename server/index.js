@@ -11,6 +11,7 @@ const newsRoutes = require("./routes/newsRoutes");
 const favoritesRoutes = require("./routes/favoritesRoutes");
 const publicLeaderboardRoutes = require("./routes/publicLeaderboardRoutes");
 const leaderboardRoutes = require("./routes/leaderboardRoutes");
+const complaintRoutes = require("./routes/complaintRoutes");    
 const { globalLimiter } = require("./middleware/rateLimiter");
 const { errorHandler, notFound } = require("./middleware/errorHandler");
 
