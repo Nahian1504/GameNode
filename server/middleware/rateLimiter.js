@@ -22,10 +22,7 @@ const authLimiter = rateLimit({
   },
   skipSuccessfulRequests: true,
 });
-<<<<<<< HEAD
-=======
  
->>>>>>> 12f9879e32170c9ae83809ec489d583cf9670908
 
 const steamLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -38,10 +35,7 @@ const steamLimiter = rateLimit({
   },
 });
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 12f9879e32170c9ae83809ec489d583cf9670908
 const dashboardLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: parseInt(process.env.DASHBOARD_RATE_LIMIT_MAX) || 20,
@@ -50,7 +44,6 @@ const dashboardLimiter = rateLimit({
   message: { success: false, message: "Too many dashboard requests. Please wait before refreshing." },
 });
  
-<<<<<<< HEAD
 
 const leaderboardLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -60,8 +53,40 @@ const leaderboardLimiter = rateLimit({
   message: { success: false, message: "Too many leaderboard requests. Please wait." },
 });
  
-module.exports = { globalLimiter, authLimiter, steamLimiter, dashboardLimiter, leaderboardLimiter };
-=======
+
+const newsLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: parseInt(process.env.NEWS_RATE_LIMIT_MAX) || 15,
+  standardHeaders: "draft-7",
+  legacyHeaders: false,
+  message: { success: false, message: "Too many news requests. Please wait before trying again." },
+});
  
-module.exports = { globalLimiter, authLimiter, steamLimiter, dashboardLimiter };
->>>>>>> 12f9879e32170c9ae83809ec489d583cf9670908
+
+const playerCountLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: parseInt(process.env.PLAYER_COUNT_RATE_LIMIT_MAX) || 40,
+  standardHeaders: "draft-7",
+  legacyHeaders: false,
+  message: { success: false, message: "Too many player count requests. Please wait." },
+});
+
+
+const recommendationLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  limit: parseInt(process.env.RECOMMENDATION_RATE_LIMIT_MAX) || 5,
+  standardHeaders: "draft-7",
+  legacyHeaders: false,
+  message: { success: false, message: "You have reached the recommendation limit. Please wait an hour before generating new recommendations.", statusCode: 429 },
+});
+
+
+const assistantLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  limit: parseInt(process.env.ASSISTANT_RATE_LIMIT_MAX) || 20,
+  standardHeaders: "draft-7",
+  legacyHeaders: false,
+  message: { success: false, message: "You have reached the assistant message limit for this hour. Please try again later.", statusCode: 429 },
+});
+ 
+module.exports = { globalLimiter, authLimiter, steamLimiter, dashboardLimiter, leaderboardLimiter, newsLimiter, playerCountLimiter, recommendationLimiter, assistantLimiter };

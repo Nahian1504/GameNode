@@ -7,19 +7,10 @@ const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const steamRoutes = require("./routes/steamRoutes");
 const achievementRoutes = require("./routes/achievementRoutes");
-const newsRoutes = require("./routes/newsRoutes");
-const favoritesRoutes = require("./routes/favoritesRoutes");
-const publicLeaderboardRoutes = require("./routes/publicLeaderboardRoutes");
-const leaderboardRoutes = require("./routes/leaderboardRoutes");
-const complaintRoutes = require("./routes/complaintRoutes");    
-const recommendationRoutes  = require("./routes/recommendationRoutes"); 
-const assistantRoutes = require("./routes/assistantRoutes"); 
 const { globalLimiter } = require("./middleware/rateLimiter");
 const { errorHandler, notFound } = require("./middleware/errorHandler");
 
 const app = express();
-
-app.set("trust proxy", 1);
 
 // Connect to MongoDB 
 connectDB();
@@ -64,28 +55,6 @@ app.use("/api/steam", steamRoutes);
 // Achievements
 app.use("/api/achievements", achievementRoutes);
 
-// Game News
-app.use("/api/news", newsRoutes);
-
-// Favorites
-app.use("/api/favorites", favoritesRoutes);
-
-// Leaderboard
-app.use("/api/leaderboard/public", publicLeaderboardRoutes);
-app.use("/api/leaderboard", leaderboardRoutes);
-
-// Complaints
-app.use("/api/complaints", complaintRoutes);    
-
-// Recommendations
-app.use("/api/recommendations", recommendationRoutes); 
-
-// AI Assistant
-app.use("/api/assistant", assistantRoutes);   
-
-// Silently ignores favicon requests from browser
-app.get("/favicon.ico", (req, res) => res.status(204).end());
-
 // Error Handling 
 app.use(notFound);
 app.use(errorHandler);
@@ -95,8 +64,8 @@ const PORT = process.env.PORT || 5000;
 
 const server = app.listen(PORT, () => {
   console.log(`\n🎮 GameNode API running on port ${PORT}`);
-  console.log(` Environment: ${process.env.NODE_ENV || "development"}`);
-  console.log(` Health check: http://localhost:${PORT}/api/health\n`);
+  console.log(`   Environment: ${process.env.NODE_ENV || "development"}`);
+  console.log(`   Health check: http://localhost:${PORT}/api/health\n`);
 });
 
 process.on("unhandledRejection", (err) => {
