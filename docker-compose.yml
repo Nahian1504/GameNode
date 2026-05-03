@@ -1,0 +1,62 @@
+version: "3.9"
+
+services:
+
+  client:                         
+    build:
+      context: ./client
+      args:
+        REACT_APP_API_URL: http://localhost:5000
+    image: gamenode-client
+    container_name: gamenode-client
+    ports:
+      - "3000:80"                 
+    depends_on:
+      - server
+    networks:
+      - gamenode-network
+    restart: unless-stopped
+    
+  server:
+    build: ./server
+    image: gamenode-server
+    container_name: gamenode-server
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./server/.env
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://mongodb:27017/gamenode
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - gamenode-network
+    restart: unless-stopped
+
+  mongodb:
+    image: mongo:6
+    container_name: gamenode-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - gamenode-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.runCommand({ ping: 1 })"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+volumes:
+  mongo-data:
+    name: gamenode-mongo-data
+
+networks:
+  gamenode-network:
+    name: gamenode-network
+    driver: bridge
