@@ -1,4 +1,6 @@
-const errorHandler = (err, req, res, next) => {
+const ErrorLog = require("../models/ErrorLog");
+
+const errorHandler = async (err, req, res, next) => {
   let statusCode = err.statusCode || 500;
   let message = err.message || "Internal Server Error";
 
@@ -20,18 +22,27 @@ const errorHandler = (err, req, res, next) => {
   // JWT errors
   if (err.name === "JsonWebTokenError") {
     statusCode = 401;
-    message = "Invalid token.";
+    message = "Invalid token. Please log in again.";
   }
   if (err.name === "TokenExpiredError") {
     statusCode = 401;
-    message = "Token expired. Please log in again.";
+    message = "Your session has expired. Please log in again.";
   }
 
-  // Cast error (invalid MongoDB ID)
+  // Cast error 
   if (err.name === "CastError") {
     statusCode = 400;
-    message = "Invalid ID format.";
+    message = `Invalid ${err.path}: ${err.value}`;
   }
+
+  await ErrorLog.logError({
+    route: req.originalUrl || "unknown",
+    method: req.method || "UNKNOWN",
+    statusCode,
+    message,
+    stack: err.stack,
+    ip: req.ip || req.connection?.remoteAddress,
+  });
 
   // Log error in development
   if (process.env.NODE_ENV === "development") {
@@ -41,13 +52,14 @@ const errorHandler = (err, req, res, next) => {
   res.status(statusCode).json({
     success: false,
     message,
+    statusCode,
     ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
   });
 };
 
 // Catch-all for unhandled routes
 const notFound = (req, res, next) => {
-  const error = new Error("Route not found: ${req.originalUrl}");
+  const error = new Error(`Route not found: ${req.originalUrl}`);
   error.statusCode = 404;
   next(error);
 };
