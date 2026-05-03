@@ -12,6 +12,8 @@ const favoritesRoutes = require("./routes/favoritesRoutes");
 const publicLeaderboardRoutes = require("./routes/publicLeaderboardRoutes");
 const leaderboardRoutes = require("./routes/leaderboardRoutes");
 const complaintRoutes = require("./routes/complaintRoutes");    
+const recommendationRoutes  = require("./routes/recommendationRoutes"); 
+const assistantRoutes = require("./routes/assistantRoutes"); 
 const { globalLimiter } = require("./middleware/rateLimiter");
 const { errorHandler, notFound } = require("./middleware/errorHandler");
 
@@ -71,6 +73,15 @@ app.use("/api/favorites", favoritesRoutes);
 // Leaderboard
 app.use("/api/leaderboard/public", publicLeaderboardRoutes);
 app.use("/api/leaderboard", leaderboardRoutes);
+
+// Complaints
+app.use("/api/complaints", complaintRoutes);    
+
+// Recommendations
+app.use("/api/recommendations", recommendationRoutes); 
+
+// AI Assistant
+app.use("/api/assistant", assistantRoutes);   
 
 // Silently ignores favicon requests from browser
 app.get("/favicon.ico", (req, res) => res.status(204).end());
