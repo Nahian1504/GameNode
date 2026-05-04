@@ -331,3 +331,34 @@ const syncGamesToDB = async (userId, games) => {
 };
 
 module.exports = router;
+
+// Removes linked Steam account
+router.delete("/disconnect", protect, async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    const { UserGame } = require("../models/Game");
+    const Achievement = require("../models/Achievement");
+    const Favorite = require("../models/Favorite");
+    const Recommendation = require("../models/Recommendation");
+    const Complaint = require("../models/Complaint");
+    const Leaderboard    = require("../models/Leaderboard");
+
+    // Clear steamId and all related data in parallel
+    await Promise.all([
+      User.findByIdAndUpdate(userId, { steamId: null }),
+      UserGame.deleteMany({ userId }),
+      Achievement.deleteMany({ userId }),
+      Favorite.deleteOne({ userId }),
+      Recommendation.deleteOne({ userId }),
+      Complaint.deleteMany({ userId }),
+      Leaderboard.deleteMany({ userId }),
+    ]);
+
+    res.status(200).json({
+      success: true,
+      message: "Steam account disconnected and all data cleared.",
+    });
+  } catch (error) {
+    next(error);
+  }
+});
