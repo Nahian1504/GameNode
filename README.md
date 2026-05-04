@@ -1,15 +1,13 @@
-# 🎮 GameNode — Intelligent Gaming Dashboard
+# GameNode — Intelligent Gaming Dashboard
 
-A centralized gaming dashboard that connects to the Steam Web API to retrieve your game library, track achievements, manage leaderboards, and deliver AI-powered game recommendations.
+> A centralized gaming dashboard that connects to the Steam Web API to retrieve your game library, track achievements, manage leaderboards, and deliver AI-powered game recommendations.
 
 ---
 
-## Sprint Status
+## Sprint 1 Status
 
-| Sprint | Duration | Goal | Status |
-|--------|----------|------|--------|
-| Sprint 1 | Feb 26, 2026 – Mar 17, 2026 | User authentication, JWT-secured routes, Steam game library retrieval | ✅ Complete |
-| Sprint 2 | Mar 18, 2026 – Mar 31, 2026 | Centralized dashboard, achievements, favorites, leaderboards, player counts and news | ✅ Complete |
+**Sprint Duration:** February 26, 2026 – March 17, 2026
+**Sprint Goal:** User authentication system, JWT-secured routes, and Steam game library retrieval.
 
 ---
 
@@ -20,8 +18,8 @@ A centralized gaming dashboard that connects to the Steam Web API to retrieve yo
 | Nahian Tasnim | Frontend Lead | React UI components, Formik forms, routing, global styling, auth context, dashboard context |
 | Dhruvkumar Parmar | Backend Lead | Express server, REST API endpoints, Steam API integration, route setup |
 | Chathurya Sudhakarreddy | Database Design | MongoDB schemas, Mongoose models, database queries, indexing |
-| Akshitha Reddy Gangidi | Integration + Frontend and Backend assistant | Integration, backend endpoints |
-| Akshat Shah | Security | bcrypt password hashing, JWT generation and verification, auth middleware, rate limiting, input validation |
+| Akshitha Reddy Gangidi | QA and Steam API | Integration testing, backend tests, frontend tests, Steam API verification |
+| Akshat Shah | Security | bcrypt password hashing, JWT generation and verification, auth middleware, rate limiting |
 
 ---
 
@@ -82,38 +80,24 @@ gamenode/
 │   │
 │   ├── models/
 │   │   ├── User.js
-│   │   ├── Game.js
-│   │   ├── Achievement.js
-│   │   ├── Favorite.js
-│   │   ├── Leaderboard.js
-│   │   └── NewsCache.js
+│   │   └── Game.js
 │   │
 │   ├── routes/
 │   │   ├── authRoutes.js
-│   │   ├── steamRoutes.js
-│   │   ├── achievementRoutes.js
-│   │   ├── favoritesRoutes.js
-│   │   ├── leaderboardRoutes.js
-│   │   ├── publicLeaderboardRoutes.js
-│   │   └── newsRoutes.js
+│   │   └── steamRoutes.js
 │   │
 │   ├── middleware/
 │   │   ├── authMiddleware.js
 │   │   ├── errorHandler.js
-│   │   ├── rateLimiter.js
-│   │   ├── dashboardValidation.js
-│   │   ├── achievementValidation.js
-│   │   ├── favoritesValidation.js
-│   │   └── leaderboardValidation.js
+│   │   └── rateLimiter.js
 │   │
 │   ├── utils/
 │   │   ├── passwordUtils.js
 │   │   ├── tokenUtils.js
-│   │   ├── steamService.js
-│   │   ├── favoritesEnrichment.js
-│   │   └── csvExport.js
+│   │   └── steamService.js
 │   │
 │   └── tests/
+│       └── auth.test.js
 │
 └── client/
     ├── package.json
@@ -145,30 +129,20 @@ gamenode/
         │   ├── Layout/
         │   │   └── Navbar.jsx
         │   └── GameCard/
-        │       ├── GameCard.jsx
-        │       ├── NewsCard.jsx
-        │       ├── NewsSection.jsx
-        │       └── PlayerCountBadge.jsx
+        │       └── GameCard.jsx
         │
         ├── pages/
         │   ├── Auth/
         │   │   ├── Register.jsx
         │   │   └── Login.jsx
         │   ├── Dashboard/
-        │   │   ├── Dashboard.jsx
-        │   │   └── GameDetail.jsx
-        │   ├── Achievements/
-        │   │   └── AchievementsPage.jsx
-        │   ├── Favorites/
-        │   │   └── FavoritesPage.jsx
-        │   ├── Leaderboard/
-        │   │   └── LeaderboardPage.jsx
+        │   │   └── Dashboard.jsx
         │   ├── Steam/
         │   │   └── SteamConnect.jsx
         │   └── ErrorPages.jsx
         │
         └── tests/
-            
+            └── auth.integration.test.js
 ```
 
 ## API Endpoints
@@ -176,54 +150,58 @@ gamenode/
 All protected endpoints require the header: `Authorization: Bearer <token>`
 
 ### Authentication
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
+| Method | Endpoint | Auth Required | Description |
+|--------|----------|--------------|-------------|
 | POST | `/api/auth/register` | No | Register a new user |
 | POST | `/api/auth/login` | No | Login and receive JWT token |
 | GET | `/api/auth/me` | Yes | Get current authenticated user |
 
 ### Steam
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
+| Method | Endpoint | Auth Required | Description |
+|--------|----------|--------------|-------------|
 | POST | `/api/steam/connect` | Yes | Link a Steam account |
-| GET | `/api/steam/dashboard` | Yes | Get paginated game library with sort and playtime stats |
-| GET | `/api/steam/game/:appId` | Yes | Get aggregated game detail — playtime, player count, news, achievements |
+| GET | `/api/steam/dashboard` | Yes | Get paginated game library |
 | GET | `/api/steam/playercount/:appId` | Yes | Get current player count for a game |
-| GET | `/api/steam/news/:appId` | Yes | Get recent news for a game with optional count param |
+| GET | `/api/steam/news/:appId` | Yes | Get recent news for a game |
 | POST | `/api/steam/sync` | Yes | Force refresh game library cache |
 
-### Achievements
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | `/api/achievements/:appId` | Yes | Fetch achievements from Steam and save snapshot to DB |
-| GET | `/api/achievements/:appId/cached` | Yes | Return cached achievements from DB without calling Steam |
-
-### Favorites
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | `/api/favorites` | Yes | Get all favorite games with enriched data |
-| POST | `/api/favorites` | Yes | Add a game to favorites |
-| DELETE | `/api/favorites/:appId` | Yes | Remove a game from favorites |
-
-### Leaderboard
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | `/api/leaderboard` | Yes | Get all leaderboard entries for the current user |
-| POST | `/api/leaderboard` | Yes | Create a new leaderboard entry |
-| PUT | `/api/leaderboard/:id` | Yes | Update an existing entry |
-| DELETE | `/api/leaderboard/:id` | Yes | Delete an entry |
-| GET | `/api/leaderboard/public/:userId` | No | View public entries for any user without login |
-| GET | `/api/leaderboard/public/:userId/csv` | No | Download public entries as a CSV file |
-
-### News
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | `/api/news/:appId` | Yes | Get news with MongoDB caching and stale cache fallback |
-
 ### Health Check
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
+| Method | Endpoint | Auth Required | Description |
+|--------|----------|--------------|-------------|
 | GET | `/api/health` | No | Check server status |
+
+---
+
+## Database Schemas
+
+### User
+| Field | Type | Description |
+|-------|------|-------------|
+| username | String | Unique, 3 to 20 characters, letters, numbers, underscores only |
+| email | String | Unique, valid email format |
+| passwordHash | String | bcrypt hash, never stored as plain text |
+| steamId | String | 17-digit Steam ID, null until the user links their account |
+| role | String | Either 'user' or 'admin', defaults to 'user' |
+| createdAt | Date | Auto-generated on creation |
+| updatedAt | Date | Auto-updated on every change |
+
+### Game
+| Field | Type | Description |
+|-------|------|-------------|
+| appId | String | Steam App ID, unique |
+| name | String | Game name |
+| imgIconUrl | String | Steam icon image URL |
+| lastFetchedAt | Date | Tracks when data was last fetched from Steam |
+
+### UserGame
+| Field | Type | Description |
+|-------|------|-------------|
+| userId | ObjectId | Reference to User document |
+| appId | String | Steam App ID |
+| name | String | Game name |
+| playtimeForever | Number | Total minutes played, sourced from Steam |
+| imgIconUrl | String | Icon image URL |
+| lastSynced | Date | Timestamp of the last Steam API sync |
 
 ---
 
@@ -231,13 +209,15 @@ All protected endpoints require the header: `Authorization: Bearer <token>`
 
 ### Prerequisites
 
+Make sure the following are installed on your machine before starting.
+
 | Tool | Version | Download |
 |------|---------|---------|
 | Node.js | v18 or higher | https://nodejs.org |
 | MongoDB | v6 or higher | https://www.mongodb.com/try/download/community |
 | Git | Latest | https://git-scm.com |
 
-You will also need a free Steam Web API key from https://steamcommunity.com/dev/apikey
+You will also need a free Steam Web API key. Get one at https://steamcommunity.com/dev/apikey — you need a Steam account to do this.
 
 ---
 
@@ -248,6 +228,8 @@ git clone https://github.com/your-team/gamenode.git
 cd gamenode
 ```
 
+---
+
 ### Step 2 — Install Backend Dependencies
 
 ```bash
@@ -255,12 +237,18 @@ cd server
 npm install
 ```
 
+---
+
 ### Step 3 — Install Frontend Dependencies
+
+Open a second terminal window.
 
 ```bash
 cd client
 npm install
 ```
+
+---
 
 ### Step 4 — Start MongoDB
 
@@ -279,9 +267,13 @@ mongod --dbpath /usr/local/var/mongodb
 mongod --dbpath "C:\data\db"
 ```
 
+Verify MongoDB is running by visiting `http://localhost:27017` in your browser. You should see a plain text message from MongoDB.
+
+---
+
 ### Step 5 — Configure Environment Variables
 
-Fill the values in .env file
+Open `server/.env` and fill in the following values:
 
 ```env
 PORT=5000
@@ -294,44 +286,55 @@ RATE_LIMIT_WINDOW_MS=900000
 RATE_LIMIT_MAX=100
 AUTH_RATE_LIMIT_MAX=10
 STEAM_RATE_LIMIT_MAX=30
-DASHBOARD_RATE_LIMIT_MAX=20
-LEADERBOARD_RATE_LIMIT_MAX=25
-NEWS_RATE_LIMIT_MAX=15
-PLAYER_COUNT_RATE_LIMIT_MAX=40
 ```
 
 ### Step 6 — Start the Backend Server
 
+From the `server` folder:
+
 ```bash
-cd server
 npm run dev
 ```
 
-Confirm it is running at `http://localhost:5000/api/health`
+You should see:
+
+```
+🎮 GameNode API running on port 5000
+   Environment: development
+   Health check: http://localhost:5000/api/health
+
+MongoDB Connected: localhost
+```
+
+Confirm the server is running by opening `http://localhost:5000/api/health` in your browser.
+
+---
 
 ### Step 7 — Start the Frontend
 
+From the `client` folder in a separate terminal:
+
 ```bash
-cd client
 npm start
 ```
 
-The app opens at `http://localhost:3000`
+The React app will open automatically at `http://localhost:3000`.
+
+---
 
 ### Step 8 — Run Tests
 
-**All backend tests:**
+**Backend tests** from the `server` folder:
+
 ```bash
-cd server && npm test
+npm test
 ```
 
+**Frontend tests** from the `client` folder:
 
-**Frontend tests:**
 ```bash
-cd client && npm test
+npm test
 ```
-
-
 
 ## Troubleshooting
 
@@ -346,19 +349,15 @@ cd client && npm test
 | Steam profile is private | Go to Steam settings and set your profile visibility to Public |
 | 503 Steam API unavailable | The Steam API is temporarily down — try again in a few minutes |
 | Games not loading after Steam connect | Make sure your Steam profile is Public and your library is not empty |
-| Achievements not available | Not all games support Steam achievements — the game must have achievements enabled |
-| Leaderboard entry not saving | Make sure playerName, game, and score are all filled in and score is 0 or greater |
-| News not loading | Steam news API may be temporarily unavailable — a cached version will be shown if available |
 
 ---
+
+## Notes
+*This README covers Sprint 1 only.*
+*It will be updated at each new sprint to reflect newly added features, any changes to setup, and updated project structure.*
+
+*Last updated: Sprint 1 — March 2026*
 
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
-
----
-
-*This README covers Sprint 1 and Sprint 2.*
-*It will be updated during each sprint to reflect newly added features, any changes to setup, and updated project structure.*
-
-*Last updated: Sprint 2 — March 2026*

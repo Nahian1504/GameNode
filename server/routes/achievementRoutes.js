@@ -20,6 +20,21 @@ router.get("/:appId", protect, steamLimiter, validateAchievementParam, async (re
     try {
       rawAchievements = await getPlayerAchievements(steamId, appId);
     } catch (err) {
+      const errMsg = err.message || "";
+      if (
+        errMsg.includes("400") ||
+        errMsg.includes("Bad Request") ||
+        errMsg.includes("not available") ||
+        errMsg.includes("Achievements not available")
+      ) {
+        return res.status(200).json({
+          success: true,
+          appId,
+          summary: { total: 0, unlocked: 0, locked: 0, percent: 0 },
+          achievements: [],
+          message: "This game does not have achievements or achievement stats are private.",
+        });
+      }
       return res.status(400).json({ success: false, message: err.message });
     }
 

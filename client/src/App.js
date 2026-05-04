@@ -14,14 +14,14 @@ import Register from "./pages/Auth/Register";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import SteamConnect from "./pages/Steam/SteamConnect";
 import { NotFound, ServerError } from "./pages/ErrorPages";
-HEAD
-
-import GameDetail from "./pages/Dashboard/GameDetail";       
-import AchievementsPage from "./pages/Achievements/AchievementsPage"; 
-import FavoritesPage from "./pages/Favorites/FavoritesPage";    
+import GameDetail from "./pages/Dashboard/GameDetail";
+import AchievementsIndexPage from "./pages/Achievements/AchievementsIndexPage";
+import AchievementsPage from "./pages/Achievements/AchievementsPage";
+import FavoritesPage from "./pages/Favorites/FavoritesPage";
 import LeaderboardPage from "./pages/Leaderboard/LeaderboardPage";
+import MyComplaintsPage from "./pages/Complaint/MyComplaintsPage";
+import PublicLeaderboardPage from "./pages/Leaderboard/PublicLeaderboardPage"; 
 
- 
 // Global styles
 import "./styles/global.css";
 
@@ -31,10 +31,11 @@ const App = () => {
       <DashboardProvider>
         <Router>
           <Routes>
-            {/* Public Routes — no auth required*/}
+            {/* Public Routes — no auth required */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/500" element={<ServerError />} />
+            <Route path="/leaderboard/public/:userId" element={<PublicLeaderboardPage />} /> 
 
             {/* Protected Routes — require valid JWT */}
             <Route
@@ -53,55 +54,58 @@ const App = () => {
                 </ProtectedRoute>
               }
             />
-            <Route 
-              path="/game/:appId" 
+            <Route
+              path="/game/:appId"
               element={
                 <ProtectedRoute>
                   <GameDetail />
                 </ProtectedRoute>
-              } 
+              }
             />
-HEAD
-
-            <Route 
-              path="/achievements/:appId" 
+            <Route
+              path="/achievements"
               element={
-              <ProtectedRoute>
-                <AchievementsPage />
-              </ProtectedRoute>
-              } 
+                <ProtectedRoute>
+                  <AchievementsIndexPage />
+                </ProtectedRoute>
+              }
             />
-            <Route 
-              path="/favorites"           
+            <Route
+              path="/achievements/:appId"
               element={
-              <ProtectedRoute>
-                <FavoritesPage />
-              </ProtectedRoute>
-              } 
+                <ProtectedRoute>
+                  <AchievementsPage />
+                </ProtectedRoute>
+              }
             />
-            <Route 
-              path="/leaderboard"         
+            <Route
+              path="/favorites"
               element={
-              <ProtectedRoute>
-                <LeaderboardPage />
-              </ProtectedRoute>
-              } 
+                <ProtectedRoute>
+                  <FavoritesPage />
+                </ProtectedRoute>
+              }
             />
-
+            <Route
+              path="/leaderboard"
+              element={
+                <ProtectedRoute>
+                  <LeaderboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/complaints"
+              element={
+                <ProtectedRoute>
+                  <MyComplaintsPage />
+                </ProtectedRoute>
+              }
+            />
 
             {/* Redirects */}
-            <Route 
-              path="/" 
-              element={
-              <Navigate to="/dashboard" replace />
-              } 
-            />
-            <Route 
-              path="*" 
-              element={
-              <NotFound />
-              } 
-            />
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>
       </DashboardProvider>
