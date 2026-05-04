@@ -1,18 +1,18 @@
-jest.mock("../../utils/genAIService", () => ({
+jest.mock("../utils/genAIService", () => ({
   generateComplaintResolution: jest.fn(),
   generateRecommendations: jest.fn(),
   generateAssistantResponse: jest.fn().mockResolvedValue("Here are some tips for your game!"),
 }));
 
-jest.mock("../../utils/assistantContext", () => ({
+jest.mock("../utils/assistantContext", () => ({
   getUserContextForAssistant: jest.fn().mockResolvedValue({ topGames: [], totalGames: 5, totalPlaytimeHours: 20, recentAchievements: [] }),
 }));
 
-require("dotenv").config({ path: require("path").join(__dirname, "../../.env") });
+require("dotenv").config({ path: require("path").join(__dirname, "../.env") });
 const request = require("supertest");
 const mongoose = require("mongoose");
-const { app, server } = require("../../index");
-const User = require("../../models/User");
+const { app, server } = require("../index");
+const User = require("../models/User");
 
 beforeAll(async () => {
   if (mongoose.connection.readyState !== 0) await mongoose.disconnect();
@@ -52,7 +52,7 @@ describe("AI Assistant Validation Test", () => {
     const res = await request(app).post("/api/assistant").set("Authorization", `Bearer ${token}`)
       .send({ message: "<script>alert('xss')</script>What game should I play?" });
     expect(res.statusCode).toBe(200);
-    const { generateAssistantResponse } = require("../../utils/genAIService");
+    const { generateAssistantResponse } = require("../utils/genAIService");
     const calledMsg = generateAssistantResponse.mock.calls[0][0];
     expect(calledMsg).not.toContain("<script>");
   });
