@@ -1,15 +1,15 @@
-jest.mock("../../utils/genAIService", () => ({
+jest.mock("../utils/genAIService", () => ({
   generateComplaintResolution: jest.fn().mockResolvedValue("Try clearing your browser cache and reloading the page."),
   generateRecommendations: jest.fn(),
   generateAssistantResponse: jest.fn(),
 }));
 
-require("dotenv").config({ path: require("path").join(__dirname, "../../.env") });
+require("dotenv").config({ path: require("path").join(__dirname, "../.env") });
 const request = require("supertest");
 const mongoose = require("mongoose");
-const { app, server } = require("../../index");
-const User = require("../../models/User");
-const Complaint = require("../../models/Complaint");
+const { app, server } = require("../index");
+const User = require("../models/User");
+const Complaint = require("../models/Complaint");
 
 beforeAll(async () => {
   if (mongoose.connection.readyState !== 0) await mongoose.disconnect();
@@ -68,7 +68,7 @@ describe("Complaint validation middleware Test", () => {
 
   test("rejects status update with invalid status value with 400", async () => {
     const token = await setup("f");
-    const complaint = await require("../../models/Complaint").create({ userId: new mongoose.Types.ObjectId(), category: "Other", description: "Valid description for this test." });
+    const complaint = await require("../models/Complaint").create({ userId: new mongoose.Types.ObjectId(), category: "Other", description: "Valid description for this test." });
     const res = await request(app).patch(`/api/complaints/${complaint._id}/status`).set("Authorization", `Bearer ${token}`).send({ status: "deleted" });
     expect(res.statusCode).toBe(400);
   });
