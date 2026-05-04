@@ -7,10 +7,6 @@ on:
     branches: [main]
 
 jobs:
-
-  # =========================
-  # Backend Tests
-  # =========================
   backend-test:
     name: Run Backend Tests
     runs-on: ubuntu-latest
@@ -41,7 +37,6 @@ jobs:
         working-directory: ./server
         run: npm ci
 
-      # ✅ Ensure MongoDB is ready
       - name: Wait for MongoDB
         run: |
           for i in {1..10}; do
@@ -60,7 +55,7 @@ jobs:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-        run: npm test -- --passWithNoTests --detectOpenHandles
+        run: npm test -- --passWithNoTests --detectOpenHandles --forceExit
 
       - name: Upload backend test results
         if: always()
@@ -72,9 +67,6 @@ jobs:
             server/test-results/
           retention-days: 7
 
-  # =========================
-  # Frontend Tests
-  # =========================
   frontend-test:
     name: Run Frontend Tests
     runs-on: ubuntu-latest
@@ -98,7 +90,7 @@ jobs:
         working-directory: ./client
         env:
           CI: true
-        run: npm test -- --watchAll=false --passWithNoTests
+        run: npm test -- --watchAll=false --passWithNoTests --forceExit
 
       - name: Upload frontend test results
         if: always()
@@ -110,9 +102,6 @@ jobs:
             client/test-results/
           retention-days: 7
 
-  # =========================
-  # Final Status Check
-  # =========================
   ci-success:
     name: All Tests Passed
     runs-on: ubuntu-latest
@@ -123,11 +112,11 @@ jobs:
       - name: Check all jobs passed
         run: |
           if [ "${{ needs.backend-test.result }}" != "success" ]; then
-            echo "❌ Backend tests failed"
+            echo "Backend tests failed"
             exit 1
           fi
           if [ "${{ needs.frontend-test.result }}" != "success" ]; then
-            echo "❌ Frontend tests failed"
+            echo "Frontend tests failed"
             exit 1
           fi
-          echo "✅ All tests passed"
+          echo "All tests passed"
