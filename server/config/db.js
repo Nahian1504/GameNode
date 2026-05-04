@@ -16,9 +16,10 @@ const connectDB = async () => {
       console.warn("MongoDB disconnected. Attempting to reconnect...");
     });
   } catch (error) {
-    console.error("MongoDB connection failed:", error.message);
+  console.error("MongoDB connection failed:", error.message);
+  if (process.env.NODE_ENV !== "test") {
     process.exit(1);
-  }
+  }}
 };
 
 module.exports = connectDB;
