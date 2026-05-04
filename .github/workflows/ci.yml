@@ -1,0 +1,77 @@
+name: GameNode CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: [main]
+
+jobs:
+
+  # Backend Tests 
+  backend-test:
+    name: Run Backend Tests
+    runs-on: ubuntu-latest
+
+    services:
+      mongodb:
+        image: mongo:6
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+          cache-dependency-path: server/package-lock.json
+
+      - name: Install server dependencies
+        working-directory: ./server
+        run: npm ci
+
+      - name: Run backend tests
+        working-directory: ./server
+        env:
+          NODE_ENV: test
+          MONGODB_URI_TEST: ${{ secrets.MONGODB_URI_TEST }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: npm test -- --forceExit --detectOpenHandles --passWithNoTests
+
+      - name: Upload backend test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-results
+          path: server/test-results/
+          retention-days: 7
+
+  
+
+  # Blocks PR if either job fails 
+  ci-success:
+    name: All Tests Passed
+    runs-on: ubuntu-latest
+    needs: [backend-test]
+    if: always()
+
+    steps:
+      - name: Check all jobs passed
+        run: |
+          if [ "${{ needs.backend-test.result }}" != "success" ]; then
+            echo "❌ Backend tests failed"
+            exit 1
+          
+          fi
+          echo "✅ All tests passed"
