@@ -1,20 +1,20 @@
-jest.mock("../utils/steamService", () => ({
+jest.mock("../../utils/steamService", () => ({
   getOwnedGames: jest.fn(), getCurrentPlayerCount: jest.fn(),
   getPlayerSummary: jest.fn(), getGameNews: jest.fn(),
   clearUserCache: jest.fn(), getGameDetail: jest.fn(),
   getPlayerAchievements: jest.fn(), getGlobalAchievementPercentages: jest.fn(),
 }));
 
-jest.mock("../utils/genAIService", () => ({
+jest.mock("../../utils/genAIService", () => ({
   generateComplaintResolution: jest.fn(), generateRecommendations: jest.fn(), generateAssistantResponse: jest.fn(),
 }));
 
-require("dotenv").config({ path: require("path").join(__dirname, "../.env") });
+require("dotenv").config({ path: require("path").join(__dirname, "../../.env") });
 const request = require("supertest");
 const mongoose = require("mongoose");
-const { app, server } = require("../index");
-const User = require("../models/User");
-const ErrorLog = require("../models/ErrorLog");
+const { app, server } = require("../../index");
+const User = require("../../models/User");
+const ErrorLog = require("../../models/ErrorLog");
 
 beforeAll(async () => {
   if (mongoose.connection.readyState !== 0) await mongoose.disconnect();
