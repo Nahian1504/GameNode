@@ -1,20 +1,20 @@
-jest.mock("../utils/genAIService", () => ({
+jest.mock("../../utils/genAIService", () => ({
   generateComplaintResolution: jest.fn(),
   generateRecommendations: jest.fn(),
   generateAssistantResponse: jest.fn().mockResolvedValue("Focus on early game objectives and map control in Dota 2."),
 }));
 
-jest.mock("../utils/assistantContext", () => ({
+jest.mock("../../utils/assistantContext", () => ({
   getUserContextForAssistant: jest.fn().mockResolvedValue({ topGames: [{ name: "Dota 2", hours: 20 }], totalGames: 5, totalPlaytimeHours: 30, recentAchievements: [] }),
 }));
 
-require("dotenv").config({ path: require("path").join(__dirname, "../.env") });
+require("dotenv").config({ path: require("path").join(__dirname, "../../.env") });
 const request = require("supertest");
 const mongoose = require("mongoose");
-const { app, server } = require("../index");
-const User = require("../models/User");
-const { generateAssistantResponse } = require("../utils/genAIService");
-const { getUserContextForAssistant } = require("../utils/assistantContext");
+const { app, server } = require("../../index");
+const User = require("../../models/User");
+const { generateAssistantResponse } = require("../../utils/genAIService");
+const { getUserContextForAssistant } = require("../../utils/assistantContext");
 
 beforeAll(async () => {
   if (mongoose.connection.readyState !== 0) await mongoose.disconnect();

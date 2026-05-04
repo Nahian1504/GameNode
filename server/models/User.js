@@ -24,7 +24,6 @@ const userSchema = new mongoose.Schema(
     passwordHash: {
       type: String,
       required: [true, "Password is required"],
-      select: false,
     },
 
     // Steam integration 

@@ -1,16 +1,16 @@
-jest.mock("../utils/genAIService", () => ({
+jest.mock("../../utils/genAIService", () => ({
   generateComplaintResolution: jest.fn().mockResolvedValue("Try clearing your browser cache and reloading the page."),
   generateRecommendations: jest.fn(),
   generateAssistantResponse: jest.fn(),
 }));
 
-require("dotenv").config({ path: require("path").join(__dirname, "../.env") });
+require("dotenv").config({ path: require("path").join(__dirname, "../../.env") });
 const request = require("supertest");
 const mongoose  = require("mongoose");
-const { app, server } = require("../index");
-const User = require("../models/User");
-const Complaint = require("../models/Complaint");
-const { generateComplaintResolution } = require("../utils/genAIService");
+const { app, server } = require("../../index");
+const User = require("../../models/User");
+const Complaint = require("../../models/Complaint");
+const { generateComplaintResolution } = require("../../utils/genAIService");
 
 beforeAll(async () => {
   if (mongoose.connection.readyState !== 0) await mongoose.disconnect();
