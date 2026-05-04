@@ -1,8 +1,8 @@
 jest.mock("axios");
-require("dotenv").config({ path: require("path").join(__dirname, "../.env") });
+require("dotenv").config({ path: require("path").join(__dirname, "../../.env") });
 const mongoose = require("mongoose");
 const axios = require("axios");
-const { generateComplaintResolution } = require("../utils/genAIService");
+const { generateComplaintResolution } = require("../../utils/genAIService");
 
 beforeAll(async () => {
   if (mongoose.connection.readyState !== 0) await mongoose.disconnect();

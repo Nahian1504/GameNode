@@ -39,7 +39,7 @@ router.get("/:appId", protect, steamLimiter, validateAchievementParam, async (re
     }
 
     let globalPercentMap = {};
-    try { globalPercentMap = await getGlobalAchievementPercentages(appId); } catch { }
+    try { globalPercentMap = await getGlobalAchievementPercentages(appId); } catch {}
 
     const formatted = rawAchievements.map((a) => ({
       apiName: a.apiname,
