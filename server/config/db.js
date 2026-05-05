@@ -2,9 +2,12 @@ const mongoose = require("mongoose");
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI, {
-      maxPoolSize: 10,
-    });
+    const conn = await mongoose.connect(
+      process.env.MONGODB_URI_TEST || process.env.MONGODB_URI,
+      {
+        maxPoolSize: 10,
+      }
+    );
 
     console.log(`MongoDB Connected: ${conn.connection.host}`);
 
@@ -18,7 +21,6 @@ const connectDB = async () => {
   } catch (error) {
     console.error("MongoDB connection failed:", error.message);
 
-    // ✅ FIX: do not exit during tests
     if (process.env.NODE_ENV !== "test") {
       process.exit(1);
     }
