@@ -17,7 +17,11 @@ const connectDB = async () => {
     });
   } catch (error) {
     console.error("MongoDB connection failed:", error.message);
-    process.exit(1);
+
+    // ✅ FIX: do not exit during tests
+    if (process.env.NODE_ENV !== "test") {
+      process.exit(1);
+    }
   }
 };
 
